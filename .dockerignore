@@ -1,0 +1,5 @@
+.git
+old-code
+rrd-example
+*.md
+.DS_Store

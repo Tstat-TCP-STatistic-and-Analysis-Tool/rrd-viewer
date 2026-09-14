@@ -1,0 +1,15 @@
+services:
+  tstat-rrd-viewer:
+    build: .
+    ports:
+      - "8080:80"
+    volumes:
+      # one line per RRD folder you want to expose, mounted as a
+      # sub-directory of rrd_data; the folder name becomes the trace
+      # name shown in the web UI.
+      - ./rrd-example:/var/www/tstat/rrd_data/example:ro
+    environment:
+      # leave both empty (or unset) to disable password protection
+      BASIC_AUTH_USER: ""
+      BASIC_AUTH_PASS: ""
+    restart: unless-stopped
