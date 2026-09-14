@@ -7,8 +7,7 @@ over the web.
 ## What's in here
 
 - [`cgi-bin/tstat_rrd.cgi`](cgi-bin/tstat_rrd.cgi) — the Perl CGI page that
-  reads the RRD files and renders the graphs (a lightly fixed-up version of
-  the original script found in [`old-code/`](old-code)).
+  reads the RRD files and renders the graphs.
 - `Dockerfile` / [`docker/`](docker) — builds an image running nginx +
   fcgiwrap + the CGI script, exposed on port 80 at `/tstat_rrd.cgi`.
 - [`rrd-example/`](rrd-example) — a sample set of Tstat RRD files you can
@@ -71,14 +70,11 @@ it). With the default `docker-compose.yml`, the bundled `rrd-example/` data
 set is mounted as the `example` trace so you can confirm graphs render
 correctly out of the box.
 
-## Notes on what changed vs. the legacy `old-code/`
+## Notes on the CGI script
 
-- `tstat_rrd.cgi` and `tstat_rrd_private.cgi` differed only in which data
-  directory they pointed to (and the page title) — there was no real
-  password check in the private variant. That's now expressed as: one CGI
-  script, one configurable `rrd_data` root, and an optional HTTP Basic Auth
-  layer in nginx for the whole site.
-- The script now `chdir`s into its own directory at startup, so the
+- Password protection is now a single optional HTTP Basic Auth layer in
+  nginx for the whole site, rather than a separate data directory.
+- The script `chdir`s into its own directory at startup, so the
   relative `rrd_data` / `rrd_images` / `rrd_gallery` paths resolve
   correctly no matter how the FastCGI wrapper invokes it (those paths can
   still be overridden with the `RRD_DATA_DIR`, `RRD_IMG_DIR` and
