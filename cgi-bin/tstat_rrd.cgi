@@ -265,13 +265,6 @@ die Data::Dumper->Dump( [ \@_, $dbg ], [ 'ARGS', 'you_left_me_with_no_choice' ] 
 use vars qw($idx2value %description2param %description @defColor $color %css); 
 
 
-sub hidden_stuff {
-    # originally restricted a few extra features (test traces, EPS /
-    # gallery links) to hosts on the polito.it network; access control
-    # is now handled at the web server level, so nothing is hidden here.
-    return 0;
-}
-	    
 $tstat_rrd_cgi = (split '/', $0)[-1]; #"tstat_rrd.cgi";
 
 #### Security Fix -MMM-
@@ -479,8 +472,7 @@ sub verb { print STDERR ("@_\n") if $debug };
 sub is_valid {
   my ($trace,$param) = @_;
   # no need for local flows in Polito or GARR traces
-  return 0 if ($trace =~ m/(Polito|GARR)/) && $param =~ m/_loc$/;  
-  return 0 if $trace =~ m/^test/ && hidden_stuff();    
+  return 0 if ($trace =~ m/(Polito|GARR)/) && $param =~ m/_loc$/;
   return 0 if $trace =~ m/(Backup)/;
   return 1;
 }
@@ -1199,20 +1191,19 @@ my $PSPLITVAR = ( $pDirection eq 'bothcs' && $pServerifiable{$pVar} )  ? '_c2s' 
 	    # /    eps            __________/ 
 	    # \__________________/.:nonsns:.  
 	    # 				  
-	    # are hidden to the rest of the world...
 	    $jsAddToGallery="javascript:
 	    	newwindow=window.open(\"$tstat_rrd_cgi?gallery_add=$imagef&gallery_cmd=$cmdf&var=$pVar&dir=$pDir&direction=$pDirection\");
 		if(newwindow.focus){
-			newwindow.focus() 
+			newwindow.focus()
 		}";
 
 
-	    my $other_formats = hidden_stuff() ? "" :
+	    my $other_formats =
 	        "&nbsp&nbsp
-		<font size=-3> 
+		<font size=-3>
 		<a href='/$epsf'>[PostScript]</a> &nbsp&nbsp
 		<a href='$jsAddToGallery'>[Add to Gallery]</a> &nbsp&nbsp
-                </font>"; 
+                </font>";
 
 	    $html .= join("", "<h2> $dlab $other_formats </h2>\n",
 	                       ( -e $imagef ) ? 
